@@ -352,9 +352,7 @@ function App(): React.ReactNode {
             <Typography variant={'h4'}>Mailing Information</Typography>
             <Typography variant={'caption'}>Please send cash / checks to:</Typography>
             <div style={{ height: 10 }} />
-            <Typography>
-              <pre>{properties.mailCheckAddress}</pre>
-            </Typography>
+            <Typography style={{ whiteSpace: 'pre-line' }}>{properties.mailCheckAddress}</Typography>
           </Collapse>
         </DialogContent>
       </Dialog>
@@ -471,7 +469,7 @@ const LetterDialog: FunctionComponent<{ showLetter: boolean; onClose: () => void
       <DialogTitle id="alert-dialog-title">More Info</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          <pre>{moreInfo}</pre>
+          <Typography style={{ whiteSpace: 'pre-line' }}>{moreInfo}</Typography>
         </DialogContentText>
       </DialogContent>
     </Dialog>
