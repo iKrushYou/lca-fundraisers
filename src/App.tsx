@@ -116,6 +116,10 @@ interface Properties {
   donationGoal: number;
   deadline: Date;
   moreInfo: string;
+  paypalEmail: string;
+  venmoUser: string;
+  zelleEmail: string;
+  mailCheckAddress: string;
 }
 
 function App(): React.ReactNode {
@@ -148,7 +152,13 @@ function App(): React.ReactNode {
     donationGoal: 0,
     deadline: new Date(),
     moreInfo: 'more info',
+    paypalEmail: '',
+    venmoUser: '',
+    zelleEmail: '',
+    mailCheckAddress: '',
   });
+
+  console.log({ properties });
 
   useEffect(() => {
     setIsLoading(true);
@@ -164,6 +174,10 @@ function App(): React.ReactNode {
               donationGoal: parseFloat(row.donationGoal),
               deadline: new Date(row.deadline),
               moreInfo: row.moreInfo,
+              paypalEmail: row.paypalEmail,
+              venmoUser: row.venmoUser,
+              zelleEmail: row.zelleEmail,
+              mailCheckAddress: row.mailCheckAddress,
             };
           });
           setIsLoading(false);
@@ -299,9 +313,9 @@ function App(): React.ReactNode {
             <Grid item xs={12}>
               <a
                 style={{ textDecoration: 'none' }}
-                href={
-                  'https://www.paypal.com/donate?business=lxathuhousecorp%40gmail.com&item_name=Donation&currency_code=USD'
-                }
+                href={`https://www.paypal.com/donate?business=${encodeURI(
+                  properties.paypalEmail
+                )}&item_name=Donation&currency_code=USD`}
                 target={'_blank'}
                 rel={'noreferrer'}
               >
@@ -313,7 +327,7 @@ function App(): React.ReactNode {
             <Grid item xs={12}>
               <a
                 style={{ textDecoration: 'none' }}
-                href={'https://venmo.com/Alex-Lawson-6'}
+                href={`https://venmo.com/${properties.venmoUser}`}
                 target={'_blank'}
                 rel={'noreferrer'}
               >
@@ -323,7 +337,7 @@ function App(): React.ReactNode {
               </a>
             </Grid>
             <Grid item xs={12}>
-              <Button variant={'contained'} fullWidth onClick={() => alert('lxathuhousecorp@gmail.com')}>
+              <Button variant={'contained'} fullWidth onClick={() => alert(properties.zelleEmail)}>
                 Zelle
               </Button>
             </Grid>
@@ -338,10 +352,9 @@ function App(): React.ReactNode {
             <Typography variant={'h4'}>Mailing Information</Typography>
             <Typography variant={'caption'}>Please send cash / checks to:</Typography>
             <div style={{ height: 10 }} />
-            <Typography>Theta Upsilon of Lambda Chi Alpha</Typography>
-            <Typography>91 McGuinness Blvd</Typography>
-            <Typography>Apt 3</Typography>
-            <Typography>Brooklyn, NY 11222</Typography>
+            <Typography>
+              <pre>{properties.mailCheckAddress}</pre>
+            </Typography>
           </Collapse>
         </DialogContent>
       </Dialog>
@@ -353,6 +366,7 @@ export default App;
 
 const CountdownText: FunctionComponent<{ targetDate: Date }> = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null | undefined>(undefined);
+  console.log({ timeLeft });
 
   useEffect(() => {
     updateCountdown();
@@ -364,7 +378,7 @@ const CountdownText: FunctionComponent<{ targetDate: Date }> = ({ targetDate }) 
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [targetDate]);
 
   function updateCountdown() {
     const timeLeft = calculateCountdown(targetDate);
