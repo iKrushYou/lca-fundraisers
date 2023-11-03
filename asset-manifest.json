@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/lca-fundraisers/static/js/main.49ed90d2.chunk.js",
-    "main.js.map": "/lca-fundraisers/static/js/main.49ed90d2.chunk.js.map",
+    "main.js": "/lca-fundraisers/static/js/main.09c0a948.chunk.js",
+    "main.js.map": "/lca-fundraisers/static/js/main.09c0a948.chunk.js.map",
     "runtime-main.js": "/lca-fundraisers/static/js/runtime-main.62b804d4.js",
     "runtime-main.js.map": "/lca-fundraisers/static/js/runtime-main.62b804d4.js.map",
     "static/js/2.74571433.chunk.js": "/lca-fundraisers/static/js/2.74571433.chunk.js",
@@ -12,6 +12,6 @@
   "entrypoints": [
     "static/js/runtime-main.62b804d4.js",
     "static/js/2.74571433.chunk.js",
-    "static/js/main.49ed90d2.chunk.js"
+    "static/js/main.09c0a948.chunk.js"
   ]
 }
