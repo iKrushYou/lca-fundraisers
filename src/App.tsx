@@ -109,13 +109,13 @@ interface Donation {
   name: string;
   zeta: string;
   amount: number;
-  displayAmount: boolean;
   date: Date;
 }
 
 interface Properties {
   donationGoal: number;
   deadline: Date;
+  moreInfo: string;
 }
 
 function App(): React.ReactNode {
@@ -135,7 +135,6 @@ function App(): React.ReactNode {
               name: row.name,
               zeta: row.zeta,
               amount: parseFloat(row.amount.replace('$', '')),
-              displayAmount: Boolean(row.displayAmount),
               date: new Date(row.date),
             }))
           );
@@ -145,7 +144,11 @@ function App(): React.ReactNode {
     );
   }, []);
 
-  const [properties, setProperties] = useState<Properties>({ donationGoal: 0, deadline: new Date() });
+  const [properties, setProperties] = useState<Properties>({
+    donationGoal: 0,
+    deadline: new Date(),
+    moreInfo: 'more info',
+  });
 
   useEffect(() => {
     setIsLoading(true);
@@ -160,6 +163,7 @@ function App(): React.ReactNode {
             return {
               donationGoal: parseFloat(row.donationGoal),
               deadline: new Date(row.deadline),
+              moreInfo: row.moreInfo,
             };
           });
           setIsLoading(false);
@@ -281,7 +285,7 @@ function App(): React.ReactNode {
           .
         </a>
       </Box>
-      <LetterDialog showLetter={showLetter} onClose={() => setShowLetter(false)} />
+      <LetterDialog showLetter={showLetter} onClose={() => setShowLetter(false)} moreInfo={properties.moreInfo} />
       <Dialog
         open={showDonateDialog}
         onClose={() => setShowDonateDialog(false)}
@@ -436,7 +440,11 @@ const BorderLinearProgress = withStyles((theme) => ({
   },
 }))(LinearProgress);
 
-const LetterDialog: FunctionComponent<{ showLetter: boolean; onClose: () => void }> = ({ showLetter, onClose }) => {
+const LetterDialog: FunctionComponent<{ showLetter: boolean; onClose: () => void; moreInfo: string }> = ({
+  showLetter,
+  moreInfo,
+  onClose,
+}) => {
   return (
     <Dialog
       open={showLetter}
@@ -446,10 +454,10 @@ const LetterDialog: FunctionComponent<{ showLetter: boolean; onClose: () => void
       fullWidth
       maxWidth={'lg'}
     >
-      <DialogTitle id="alert-dialog-title">A Letter from the Actives</DialogTitle>
+      <DialogTitle id="alert-dialog-title">More Info</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          <p>Dear Alumni of Lambda Chi Alpha, Theta Upsilon Zeta,</p>
+          <pre>{moreInfo}</pre>
         </DialogContentText>
       </DialogContent>
     </Dialog>
@@ -477,12 +485,12 @@ const DonorListTiers: FunctionComponent<{ donations: Donation[]; range: any }> =
                       ({details})
                     </Typography>
                   </div>
-                  {tierDonations.map(({ name, zeta, amount, displayAmount }) => (
+                  {tierDonations.map(({ name, zeta, amount }) => (
                     <div key={name} style={{ display: 'flex' }}>
                       <Typography style={{ flex: 1 }}>
                         {name} {zeta ? `(${zeta})` : ''}
                       </Typography>
-                      {displayAmount && <Typography>${amount}</Typography>}
+                      <Typography>{formatMoney(amount)}</Typography>
                     </div>
                   ))}
                 </CardContent>
@@ -510,12 +518,12 @@ const DonationListTime: FunctionComponent<{ donations: Donation[] }> = ({ donati
           <TableBody>
             {donations
               .sort((a, b) => b.date.getTime() - a.date.getTime())
-              .map(({ date, name, zeta, amount, displayAmount }) => (
+              .map(({ date, name, zeta, amount }) => (
                 <TableRow key={name}>
                   <TableCell>{format(date, 'P')}</TableCell>
                   <TableCell>{name}</TableCell>
                   <TableCell>{zeta}</TableCell>
-                  <TableCell>{displayAmount ? `$${amount}` : ''}</TableCell>
+                  <TableCell>{formatMoney(amount)}</TableCell>
                 </TableRow>
               ))}
           </TableBody>
