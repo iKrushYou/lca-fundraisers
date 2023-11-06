@@ -196,8 +196,6 @@ function App(): React.ReactNode {
     return { min, max };
   }, [donationsData]);
 
-  console.log({ range });
-
   const totalAmount = donationsData?.reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0);
 
   const [showLetter, setShowLetter] = useState(false);
@@ -264,7 +262,7 @@ function App(): React.ReactNode {
               <Tooltip title={formatPct(progressPct)}>
                 <BorderLinearProgress
                   variant="determinate"
-                  value={(totalAmount / DONATION_GOAL) * 100.0}
+                  value={progressPct * 100.0}
                   style={{ width: '100%', marginTop: 20, marginBottom: 10 }}
                 />
               </Tooltip>
@@ -364,7 +362,6 @@ export default App;
 
 const CountdownText: FunctionComponent<{ targetDate: Date }> = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null | undefined>(undefined);
-  console.log({ timeLeft });
 
   useEffect(() => {
     updateCountdown();
