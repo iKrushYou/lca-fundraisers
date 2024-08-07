@@ -17,7 +17,11 @@ import Table from '@material-ui/core/Table';
 import TableCell from '@material-ui/core/TableCell';
 import { format } from 'date-fns';
 
-const DONATION_GOAL = 18000;
+const donationsCsvUrl =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2jIahMs8a0-K-ulxb5DYGBEumd7iJQFAVOpFss2wSM4WHSVyaizMyxtWKI_yno4M6kVdrNj5byZnW/pub?gid=0&single=true';
+const propertiesCsvUrl =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2jIahMs8a0-K-ulxb5DYGBEumd7iJQFAVOpFss2wSM4WHSVyaizMyxtWKI_yno4M6kVdrNj5byZnW/pub?gid=1502649564&single=true';
+const editUrl = 'https://docs.google.com/spreadsheets/d/19EROMkzdELhWXkjH0ua-lBD-K_WPOKW6ErEsQjC3QHs/edit?gid=0';
 
 const donationTiers = [
   {
@@ -115,6 +119,7 @@ interface Donation {
 interface Properties {
   donationGoal: number;
   deadline: Date;
+  title: string;
   moreInfo: string;
   paypalEmail: string;
   venmoUser: string;
@@ -128,29 +133,27 @@ function App(): React.ReactNode {
 
   useEffect(() => {
     setIsLoading(true);
-    Papa.parse(
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vS1gk8NEzkYM4dW211o-knOAufdli-gEoZLaunhkfDrSPCm0iDa4HEo92br6jP7Q0JRkS0i_HB7mK7P/pub?gid=0&single=true&output=csv',
-      {
-        download: true,
-        header: true,
-        complete: ({ data }) => {
-          setData(
-            data.map((row: any) => ({
-              name: row.name,
-              zeta: row.zeta,
-              amount: parseFloat(row.amount.replace('$', '')),
-              date: new Date(row.date),
-            }))
-          );
-          setIsLoading(false);
-        },
-      }
-    );
+    Papa.parse(`${donationsCsvUrl}&output=csv`, {
+      download: true,
+      header: true,
+      complete: ({ data }) => {
+        setData(
+          data.map((row: any) => ({
+            name: row.name,
+            zeta: row.zeta,
+            amount: parseFloat(row.amount.replace('$', '')),
+            date: new Date(row.date),
+          }))
+        );
+        setIsLoading(false);
+      },
+    });
   }, []);
 
   const [properties, setProperties] = useState<Properties>({
     donationGoal: 0,
     deadline: new Date(),
+    title: '',
     moreInfo: 'more info',
     paypalEmail: '',
     venmoUser: '',
@@ -162,28 +165,26 @@ function App(): React.ReactNode {
 
   useEffect(() => {
     setIsLoading(true);
-    Papa.parse(
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vS1gk8NEzkYM4dW211o-knOAufdli-gEoZLaunhkfDrSPCm0iDa4HEo92br6jP7Q0JRkS0i_HB7mK7P/pub?gid=1502649564&single=true&output=csv',
-      {
-        download: true,
-        header: true,
-        complete: ({ data }) => {
-          setProperties(() => {
-            const row = (data as any[])[0];
-            return {
-              donationGoal: parseFloat(row.donationGoal),
-              deadline: new Date(row.deadline),
-              moreInfo: row.moreInfo,
-              paypalEmail: row.paypalEmail,
-              venmoUser: row.venmoUser,
-              zelleEmail: row.zelleEmail,
-              mailCheckAddress: row.mailCheckAddress,
-            };
-          });
-          setIsLoading(false);
-        },
-      }
-    );
+    Papa.parse(`${propertiesCsvUrl}&output=csv`, {
+      download: true,
+      header: true,
+      complete: ({ data }) => {
+        setProperties(() => {
+          const row = (data as any[])[0];
+          return {
+            donationGoal: parseFloat(row.donationGoal),
+            deadline: new Date(row.deadline),
+            title: row.title,
+            moreInfo: row.moreInfo,
+            paypalEmail: row.paypalEmail,
+            venmoUser: row.venmoUser,
+            zelleEmail: row.zelleEmail,
+            mailCheckAddress: row.mailCheckAddress,
+          };
+        });
+        setIsLoading(false);
+      },
+    });
   }, []);
 
   const range = useMemo(() => {
@@ -220,15 +221,17 @@ function App(): React.ReactNode {
         >
           <img src={LCALogo} style={{ width: '100%', maxWidth: 1000 }} alt={'lca logo'} />
           <Typography variant={'h3'}>Theta Upsilon Zeta</Typography>
-          <Typography variant={'h2'}>Fall 2023 Ritual at RPI</Typography>
-          <Button
-            color={'primary'}
-            variant={'outlined'}
-            onClick={() => setShowLetter(true)}
-            style={{ marginBottom: 15 }}
-          >
-            More Info
-          </Button>
+          <Typography variant={'h2'}>{properties.title}</Typography>
+          {properties.moreInfo && (
+            <Button
+              color={'primary'}
+              variant={'outlined'}
+              onClick={() => setShowLetter(true)}
+              style={{ marginBottom: 15 }}
+            >
+              More Info
+            </Button>
+          )}
           <Button
             color={'primary'}
             variant={'contained'}
@@ -287,16 +290,6 @@ function App(): React.ReactNode {
           </>
         )}
       </div>
-      <Box display={'flex'} flexDirection={'row-reverse'}>
-        <a
-          href={'https://docs.google.com/spreadsheets/d/1nKf2fATRcnCPiuv9fD98RQ2oVDt_NVCGFeaGYQEJBZA/edit#gid=0'}
-          target={'_blank'}
-          rel={'noreferrer'}
-          style={{ padding: 5, textDecoration: 'none' }}
-        >
-          .
-        </a>
-      </Box>
       <LetterDialog showLetter={showLetter} onClose={() => setShowLetter(false)} moreInfo={properties.moreInfo} />
       <Dialog
         open={showDonateDialog}
@@ -468,6 +461,11 @@ const LetterDialog: FunctionComponent<{ showLetter: boolean; onClose: () => void
         <DialogContentText id="alert-dialog-description">
           <Typography style={{ whiteSpace: 'pre-line' }}>{moreInfo}</Typography>
         </DialogContentText>
+        <Box display={'flex'} flexDirection={'row-reverse'}>
+          <a href={editUrl} target={'_blank'} rel={'noreferrer'} style={{ padding: 5, textDecoration: 'none' }}>
+            .
+          </a>
+        </Box>
       </DialogContent>
     </Dialog>
   );
