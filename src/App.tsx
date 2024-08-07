@@ -129,7 +129,7 @@ function App(): React.ReactNode {
   useEffect(() => {
     setIsLoading(true);
     Papa.parse(
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2jIahMs8a0-K-ulxb5DYGBEumd7iJQFAVOpFss2wSM4WHSVyaizMyxtWKI_yno4M6kVdrNj5byZnW/pubhtml?gid=0&single=true&output=csv',
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vS1gk8NEzkYM4dW211o-knOAufdli-gEoZLaunhkfDrSPCm0iDa4HEo92br6jP7Q0JRkS0i_HB7mK7P/pub?gid=0&single=true&output=csv',
       {
         download: true,
         header: true,
@@ -163,7 +163,7 @@ function App(): React.ReactNode {
   useEffect(() => {
     setIsLoading(true);
     Papa.parse(
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2jIahMs8a0-K-ulxb5DYGBEumd7iJQFAVOpFss2wSM4WHSVyaizMyxtWKI_yno4M6kVdrNj5byZnW/pubhtml?gid=1502649564&single=true&output=csv',
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vS1gk8NEzkYM4dW211o-knOAufdli-gEoZLaunhkfDrSPCm0iDa4HEo92br6jP7Q0JRkS0i_HB7mK7P/pub?gid=1502649564&single=true&output=csv',
       {
         download: true,
         header: true,
